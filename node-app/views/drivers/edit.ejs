@@ -1,0 +1,51 @@
+<%- include('../partials/header') %>
+
+<div class="container-fluid">
+    <h1 class="mt-4 mb-4">Edit Driver</h1>
+    <%- include('../partials/flash_messages') %>
+
+    <div class="card shadow-sm">
+        <div class="card-header">
+            Editing: <%= driver.fullName %>
+        </div>
+        <div class="card-body p-4">
+            <form action="/drivers/<%= driver._id %>?_method=PUT" method="POST">
+                <div class="row">
+                    <div class="col-md-6 mb-3">
+                        <label for="firstName" class="form-label">First Name</label>
+                        <input type="text" class="form-control" id="firstName" name="firstName" value="<%= driver.firstName %>" required>
+                    </div>
+                    <div class="col-md-6 mb-3">
+                        <label for="lastName" class="form-label">Last Name</label>
+                        <input type="text" class="form-control" id="lastName" name="lastName" value="<%= driver.lastName %>" required>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-md-6 mb-3">
+                        <label for="licenseNumber" class="form-label">License Number</label>
+                        <input type="text" class="form-control" id="licenseNumber" name="licenseNumber" value="<%= driver.licenseNumber %>" required>
+                    </div>
+                    <div class="col-md-6 mb-3">
+                        <label for="phone" class="form-label">Phone Number</label>
+                        <input type="tel" class="form-control" id="phone" name="phone" value="<%= driver.phone %>">
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-md-6 mb-3">
+                        <label for="status" class="form-label">Status</label>
+                        <select class="form-select" id="status" name="status" required>
+                            <option value="active" <%= driver.status === 'active' ? 'selected' : '' %>>Active</option>
+                            <option value="on_leave" <%= driver.status === 'on_leave' ? 'selected' : '' %>>On Leave</option>
+                            <option value="inactive" <%= driver.status === 'inactive' ? 'selected' : '' %>>Inactive</option>
+                        </select>
+                    </div>
+                </div>
+
+                <button type="submit" class="btn btn-primary">Save Changes</button>
+                <a href="/drivers" class="btn btn-secondary">Cancel</a>
+            </form>
+        </div>
+    </div>
+</div>
+
+<%- include('../partials/footer') %>

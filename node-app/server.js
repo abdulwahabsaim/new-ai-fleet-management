@@ -14,6 +14,7 @@ import vehicleRoutes from './routes/vehicleRoutes.js';
 import dashboardRoutes from './routes/dashboardRoutes.js';
 import routeRoutes from './routes/routeRoutes.js';
 import userRoutes from './routes/userRoutes.js'; // <-- ADD THIS LINE
+import driverRoutes from './routes/driverRoutes.js'; // <-- ADD THIS
 
 // Import Middleware
 import { notFound, errorHandler } from './middleware/errorMiddleware.js';
@@ -73,6 +74,7 @@ app.use('/vehicles', vehicleRoutes);
 app.use('/dashboard', dashboardRoutes);
 app.use('/routes', routeRoutes);
 app.use('/users', userRoutes); // <-- ADD THIS LINE
+app.use('/drivers', driverRoutes); // <-- ADD THIS
 
 // --- Error Handling ---
 app.use(notFound);

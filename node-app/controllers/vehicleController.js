@@ -38,7 +38,44 @@ export const createVehicle = async (req, res) => {
         res.redirect('/vehicles/new');
     }
 };
+// ... after createVehicle function ...
 
+// @desc    Show form to edit a vehicle
+// @route   GET /vehicles/:id/edit
+export const showEditVehicleForm = async (req, res) => {
+    try {
+        const vehicle = await Vehicle.findById(req.params.id);
+        if (!vehicle) {
+            req.flash('error_msg', 'Vehicle not found');
+            return res.redirect('/vehicles');
+        }
+        res.render('vehicles/edit', {
+            title: 'Edit Vehicle',
+            vehicle,
+        });
+    } catch (error) {
+        req.flash('error_msg', 'Could not load vehicle data for editing.');
+        res.redirect('/vehicles');
+    }
+};
+
+// @desc    Update a vehicle
+// @route   PUT /vehicles/:id
+export const updateVehicle = async (req, res) => {
+    try {
+        const { make, model, year, vin, licensePlate, type, mileage, status } = req.body;
+        await Vehicle.findByIdAndUpdate(req.params.id, {
+            make, model, year, vin, licensePlate, type, mileage, status
+        });
+        req.flash('success_msg', 'Vehicle updated successfully!');
+        res.redirect(`/vehicles/${req.params.id}`);
+    } catch (error) {
+        req.flash('error_msg', 'Failed to update vehicle. Check for duplicate VIN or License Plate.');
+        res.redirect(`/vehicles/${req.params.id}/edit`);
+    }
+};
+
+// ... keep getVehicleDetails and deleteVehicle functions ...
 // @desc    Show a single vehicle's details and run prediction
 // @route   GET /vehicles/:id
 export const getVehicleDetails = async (req, res, next) => {

@@ -4,6 +4,8 @@ import {
     showNewVehicleForm,
     createVehicle,
     getVehicleDetails,
+    showEditVehicleForm,
+    updateVehicle,
     deleteVehicle
 } from '../controllers/vehicleController.js';
 import { protect } from '../middleware/authMiddleware.js';
@@ -19,8 +21,11 @@ router.route('/')
 
 router.get('/new', showNewVehicleForm);
 
+router.get('/:id/edit', showEditVehicleForm);
+
 router.route('/:id')
     .get(getVehicleDetails)
+    .put(updateVehicle)
     .delete(deleteVehicle);
 
 export default router;
