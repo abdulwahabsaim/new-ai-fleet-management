@@ -16,6 +16,7 @@
                 <table class="table table-hover align-middle" width="100%" cellspacing="0">
                     <thead class="table-light">
                         <tr>
+                            <th style="width: 2rem;"></th> <!-- For Alert Icon -->
                             <th>Make & Model</th>
                             <th>License Plate</th>
                             <th>Mileage</th>
@@ -27,6 +28,11 @@
                         <% if (vehicles.length > 0) { %>
                             <% vehicles.forEach(vehicle => { %>
                                 <tr>
+                                    <td class="text-center">
+                                        <% if (vehicle.maintenancePrediction && vehicle.maintenancePrediction.isNeeded) { %>
+                                            <i class="bi bi-exclamation-triangle-fill text-danger" title="Maintenance Recommended!"></i>
+                                        <% } %>
+                                    </td>
                                     <td>
                                         <a href="/vehicles/<%= vehicle._id %>" class="text-decoration-none fw-bold"><%= vehicle.make %> <%= vehicle.model %></a>
                                         <div class="small text-muted"><%= vehicle.year %></div>
@@ -51,7 +57,7 @@
                             <% }); %>
                         <% } else { %>
                             <tr>
-                                <td colspan="5" class="text-center py-4">No vehicles found. Add one to get started!</td>
+                                <td colspan="6" class="text-center py-4">No vehicles found. Add one to get started!</td>
                             </tr>
                         <% } %>
                     </tbody>

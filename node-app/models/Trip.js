@@ -34,6 +34,7 @@ const tripSchema = new mongoose.Schema({
     // Data collected after the trip
     finalMileage: { type: Number },
     notes: { type: String },
+    fuelConsumed: { type: Number }, // in Liters
 
     createdBy: {
         type: mongoose.Schema.Types.ObjectId,

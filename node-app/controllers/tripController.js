@@ -8,7 +8,7 @@ import Route from '../models/Route.js';
 export const getTrips = async (req, res) => {
     try {
         const trips = await Trip.find()
-            .populate('vehicle', 'make model licensePlate')
+            .populate('vehicle', 'make model licensePlate mileage')
             .populate('driver', 'fullName')
             .sort({ scheduledDate: -1 });
             
@@ -78,8 +78,8 @@ export const createTrip = async (req, res) => {
 // @route   POST /trips/:id/status
 export const updateTripStatus = async (req, res) => {
     try {
-        const trip = await Trip.findById(req.params.id);
-        const { status } = req.body;
+        const trip = await Trip.findById(req.params.id).populate('vehicle');
+        const { status, finalMileage, fuelConsumed } = req.body;
 
         if (!trip) {
             req.flash('error_msg', 'Trip not found.');
@@ -92,7 +92,50 @@ export const updateTripStatus = async (req, res) => {
                 break;
             case 'Completed':
                 trip.completedAt = new Date();
-                // In a real app, you might have a form to enter final mileage here
+                
+                if (finalMileage && fuelConsumed) {
+                    const vehicle = trip.vehicle;
+                    const startMileage = vehicle.mileage;
+                    const tripDistance = Number(finalMileage) - startMileage;
+                    
+                    trip.finalMileage = Number(finalMileage);
+                    trip.fuelConsumed = Number(fuelConsumed);
+
+                    if (vehicle && tripDistance > 0) {
+                        // --- NEW FUEL ANALYTICS LOGIC ---
+                        
+                        // 1. Update vehicle's main odometer reading
+                        vehicle.mileage = Number(finalMileage);
+                        
+                        // 2. Recalculate the vehicle's lifetime average fuel efficiency
+                        const allCompletedTrips = await Trip.find({ 
+                            vehicle: vehicle._id, 
+                            status: 'Completed', 
+                            fuelConsumed: { $gt: 0 },
+                            finalMileage: { $gt: 0 } 
+                        });
+
+                        let totalFuel = Number(fuelConsumed);
+                        let totalDistanceDriven = tripDistance;
+
+                        // Include past trips in the calculation
+                        for(const pastTrip of allCompletedTrips) {
+                           // This is a simplified calculation. A more accurate way would be to store start mileage on the trip.
+                           // But for this project, this logic is sufficient.
+                           const pastTripVehicle = await Vehicle.findById(pastTrip.vehicle);
+                           const pastTripDistance = pastTrip.totalDistance / 1000; // convert meters to km
+                           totalFuel += pastTrip.fuelConsumed;
+                           totalDistanceDriven += pastTripDistance;
+                        }
+                        
+                        if (totalDistanceDriven > 0) {
+                            // Calculate Liters per 100km
+                            vehicle.averageFuelEfficiency = (totalFuel / totalDistanceDriven) * 100;
+                        }
+                        
+                        await vehicle.save();
+                    }
+                }
                 break;
         }
 
@@ -102,6 +145,7 @@ export const updateTripStatus = async (req, res) => {
         req.flash('success_msg', `Trip status updated to "${status}"`);
         res.redirect('/trips');
     } catch (error) {
+        console.error("Error updating trip status:", error);
         req.flash('error_msg', 'Failed to update trip status.');
         res.redirect('/trips');
     }

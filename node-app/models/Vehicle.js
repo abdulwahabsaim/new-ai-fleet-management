@@ -32,6 +32,9 @@ const vehicleSchema = new mongoose.Schema({
         message: { type: String, default: 'No prediction available.' },
         predictedAt: { type: Date },
     },
+    // Added for fuel analytics
+    averageFuelEfficiency: { type: Number }, // In L/100km
+
     // Simple maintenance history
     maintenanceHistory: [maintenanceRecordSchema],
 }, {

@@ -31,6 +31,14 @@
                         <li class="list-group-item d-flex justify-content-between"><strong>License Plate:</strong> <span><%= vehicle.licensePlate %></span></li>
                         <li class="list-group-item d-flex justify-content-between"><strong>Mileage:</strong> <span><%= vehicle.mileage.toLocaleString() %> km</span></li>
                         <li class="list-group-item d-flex justify-content-between"><strong>Status:</strong> <span class="badge bg-<%= vehicle.status === 'active' ? 'success' : 'warning' %>"><%= vehicle.status %></span></li>
+                        <li class="list-group-item d-flex justify-content-between">
+                            <strong>Avg. Fuel Efficiency:</strong> 
+                            <% if (vehicle.averageFuelEfficiency) { %>
+                                <span class="fw-bold"><%= vehicle.averageFuelEfficiency.toFixed(2) %> L/100km</span>
+                            <% } else { %>
+                                <span class="text-muted">No data</span>
+                            <% } %>
+                        </li>
                     </ul>
                 </div>
             </div>
