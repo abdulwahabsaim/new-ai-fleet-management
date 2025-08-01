@@ -1,0 +1,74 @@
+<%- include('../partials/header') %>
+
+<div class="container-fluid">
+    <div class="d-sm-flex align-items-center justify-content-between mb-4 mt-4">
+        <h1 class="h3 mb-0 text-dark">Trip Management</h1>
+        <a href="/trips/new" class="btn btn-primary shadow-sm">
+            <i class="bi bi-plus-lg me-1"></i> Plan New Trip
+        </a>
+    </div>
+
+    <%- include('../partials/flash_messages') %>
+
+    <div class="card shadow-sm">
+        <div class="card-body">
+            <div class="table-responsive">
+                <table class="table table-hover align-middle">
+                    <thead class="table-light">
+                        <tr>
+                            <th>Title / Route</th>
+                            <th>Vehicle</th>
+                            <th>Driver</th>
+                            <th>Scheduled Date</th>
+                            <th>Status</th>
+                            <th class="text-end">Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <% if (trips.length > 0) { %>
+                            <% trips.forEach(trip => { %>
+                                <tr>
+                                    <td>
+                                        <div class="fw-bold"><%= trip.title %></div>
+                                        <div class="small text-muted"><%= trip.routeName %></div>
+                                    </td>
+                                    <td><%= trip.vehicle ? trip.vehicle.licensePlate : 'N/A' %></td>
+                                    <td><%= trip.driver ? trip.driver.fullName : 'N/A' %></td>
+                                    <td><%= trip.scheduledDate.toLocaleDateString() %></td>
+                                    <td>
+                                        <span class="badge 
+                                            <% if (trip.status === 'Completed') { %> bg-success
+                                            <% } else if (trip.status === 'In Progress') { %> bg-info
+                                            <% } else if (trip.status === 'Cancelled') { %> bg-danger
+                                            <% } else { %> bg-secondary <% } %>">
+                                            <%= trip.status %>
+                                        </span>
+                                    </td>
+                                    <td class="text-end">
+                                        <% if (trip.status === 'Scheduled') { %>
+                                            <form action="/trips/<%= trip._id %>/status?_method=POST" method="POST" class="d-inline">
+                                                <input type="hidden" name="status" value="In Progress">
+                                                <button type="submit" class="btn btn-sm btn-success">Start Trip</button>
+                                            </form>
+                                        <% } else if (trip.status === 'In Progress') { %>
+                                             <form action="/trips/<%= trip._id %>/status?_method=POST" method="POST" class="d-inline">
+                                                <input type="hidden" name="status" value="Completed">
+                                                <button type="submit" class="btn btn-sm btn-primary">Complete Trip</button>
+                                            </form>
+                                        <% } %>
+                                    </td>
+                                </tr>
+                            <% }); %>
+                        <% } else { %>
+                            <tr>
+                                <td colspan="6" class="text-center py-4">No trips scheduled. Plan one to get started!</td>
+                            </tr>
+                        <% } %>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+
+<%- include('../partials/footer') %>

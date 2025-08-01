@@ -7,14 +7,14 @@
         <a href="/vehicles" class="list-group-item list-group-item-action <%= currentPath.startsWith('/vehicles') ? 'active' : '' %>">
             <i class="bi bi-truck-front-fill me-2"></i>Vehicles
         </a>
-        
-        <!-- ADD THIS NEW LINK -->
         <a href="/drivers" class="list-group-item list-group-item-action <%= currentPath.startsWith('/drivers') ? 'active' : '' %>">
             <i class="bi bi-person-badge me-2"></i>Drivers
         </a>
-        
         <a href="/routes" class="list-group-item list-group-item-action <%= currentPath.startsWith('/routes') ? 'active' : '' %>">
             <i class="bi bi-sign-merge-right me-2"></i>Routes
+        </a>
+        <a href="/trips" class="list-group-item list-group-item-action <%= currentPath.startsWith('/trips') ? 'active' : '' %>">
+            <i class="bi bi-geo-alt-fill me-2"></i>Trips
         </a>
         
         <% if (isAuthenticated && user.role === 'admin') { %>

@@ -1,0 +1,64 @@
+<%- include('../partials/header') %>
+
+<div class="container-fluid">
+    <h1 class="mt-4 mb-4">Plan a New Trip</h1>
+    <%- include('../partials/flash_messages') %>
+
+    <div class="card shadow-sm">
+        <div class="card-header">
+            Trip Details
+        </div>
+        <div class="card-body p-4">
+            <form action="/trips" method="POST">
+                <div class="mb-3">
+                    <label for="title" class="form-label">Trip Title</label>
+                    <input type="text" class="form-control" id="title" name="title" placeholder="e.g. Morning Warehouse Run" required>
+                </div>
+                <div class="row">
+                    <div class="col-md-4 mb-3">
+                        <label for="vehicle" class="form-label">Assign Vehicle</label>
+                        <select class="form-select" id="vehicle" name="vehicle" required>
+                            <option value="" disabled selected>Select a vehicle...</option>
+                            <% vehicles.forEach(v => { %>
+                                <option value="<%= v._id %>"><%= v.make %> <%= v.model %> (<%= v.licensePlate %>)</option>
+                            <% }); %>
+                        </select>
+                    </div>
+                    <div class="col-md-4 mb-3">
+                        <label for="driver" class="form-label">Assign Driver</label>
+                        <select class="form-select" id="driver" name="driver" required>
+                            <option value="" disabled selected>Select a driver...</option>
+                             <% drivers.forEach(d => { %>
+                                <option value="<%= d._id %>"><%= d.fullName %></option>
+                            <% }); %>
+                        </select>
+                    </div>
+                    <div class="col-md-4 mb-3">
+                        <label for="route" class="form-label">Select Route</label>
+                        <select class="form-select" id="route" name="route" required>
+                             <option value="" disabled selected>Select a route...</option>
+                             <% routes.forEach(r => { %>
+                                <option value="<%= r._id %>"><%= r.name %></option>
+                            <% }); %>
+                        </select>
+                    </div>
+                </div>
+                 <div class="row">
+                    <div class="col-md-4 mb-3">
+                        <label for="scheduledDate" class="form-label">Scheduled Date</label>
+                        <input type="date" class="form-control" id="scheduledDate" name="scheduledDate" required>
+                    </div>
+                </div>
+                <div class="mb-3">
+                    <label for="notes" class="form-label">Notes (Optional)</label>
+                    <textarea class="form-control" id="notes" name="notes" rows="3"></textarea>
+                </div>
+
+                <button type="submit" class="btn btn-primary">Schedule Trip</button>
+                <a href="/trips" class="btn btn-secondary">Cancel</a>
+            </form>
+        </div>
+    </div>
+</div>
+
+<%- include('../partials/footer') %>
