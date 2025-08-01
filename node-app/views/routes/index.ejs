@@ -1,0 +1,43 @@
+<%- include('../partials/header') %>
+
+<div class="container-fluid">
+    <div class="d-sm-flex align-items-center justify-content-between mb-4 mt-4">
+        <h1 class="h3 mb-0 text-dark">Saved Routes</h1>
+        <a href="/routes/new" class="btn btn-primary shadow-sm">
+            <i class="bi bi-plus-lg me-1"></i> Plan New Route
+        </a>
+    </div>
+
+    <%- include('../partials/flash_messages') %>
+
+    <div class="row">
+        <% if (routes.length > 0) { %>
+            <% routes.forEach(route => { %>
+                <div class="col-lg-4 col-md-6 mb-4">
+                    <div class="card shadow-sm h-100">
+                        <div class="card-body d-flex flex-column">
+                            <h5 class="card-title"><%= route.name %></h5>
+                            <p class="card-text text-muted"><%= route.description || 'No description.' %></p>
+                            <ul class="list-unstyled mt-3 mb-4">
+                                <li><i class="bi bi-pin-map me-2"></i><%= route.waypoints.length %> Waypoints</li>
+                                <li><i class="bi bi-signpost-split me-2"></i><%= (route.totalDistance / 1000).toFixed(2) %> km</li>
+                                <li><i class="bi bi-clock me-2"></i><%= Math.round(route.totalDuration / 60) %> mins</li>
+                            </ul>
+                             <form action="/routes/<%= route._id %>?_method=DELETE" method="POST" onsubmit="return confirm('Are you sure?');" class="mt-auto">
+                                <button type="submit" class="btn btn-sm btn-outline-danger">Delete Route</button>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            <% }); %>
+        <% } else { %>
+            <div class="col-12">
+                <div class="card card-body text-center">
+                    <p class="mb-0">No routes saved yet. <a href="/routes/new">Plan your first route!</a></p>
+                </div>
+            </div>
+        <% } %>
+    </div>
+</div>
+
+<%- include('../partials/footer') %>

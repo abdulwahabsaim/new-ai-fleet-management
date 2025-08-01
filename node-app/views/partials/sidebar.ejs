@@ -1,0 +1,27 @@
+<aside class="bg-white border-end d-flex flex-column" id="sidebar">
+    <div class="list-group list-group-flush pt-3">
+
+        <a href="/dashboard" class="list-group-item list-group-item-action <%= currentPath === '/dashboard' ? 'active' : '' %>">
+            <i class="bi bi-speedometer2 me-2"></i>Dashboard
+        </a>
+        <a href="/vehicles" class="list-group-item list-group-item-action <%= currentPath.startsWith('/vehicles') ? 'active' : '' %>">
+            <i class="bi bi-truck-front-fill me-2"></i>Vehicles
+        </a>
+        <a href="/routes" class="list-group-item list-group-item-action <%= currentPath.startsWith('/routes') ? 'active' : '' %>">
+            <i class="bi bi-sign-merge-right me-2"></i>Routes
+        </a>
+        
+        <% if (isAuthenticated && user.role === 'admin') { %>
+            <div class="list-group-item text-muted small text-uppercase pt-3">Admin Area</div>
+            <a href="/users" class="list-group-item list-group-item-action <%= currentPath.startsWith('/users') ? 'active' : '' %>">
+                <i class="bi bi-people-fill me-2"></i>User Management
+            </a>
+        <% } %>
+    </div>
+    
+    <div class="list-group list-group-flush mt-auto">
+        <a href="/auth/logout" class="list-group-item list-group-item-action list-group-item-danger">
+            <i class="bi bi-box-arrow-right me-2"></i>Logout
+        </a>
+    </div>
+</aside>

@@ -1,0 +1,16 @@
+<%- include('partials/header') %>
+<div class="container text-center mt-5">
+    <h1 class="display-1 text-danger">500</h1>
+    <h2>Server Error</h2>
+    <p class="lead">We're sorry, something went wrong on our end.</p>
+    <a href="/dashboard" class="btn btn-primary">Go to Dashboard</a>
+
+    <% if (stack) { %>
+        <div class="card mt-4 text-start">
+            <div class="card-body">
+                <pre><code><%= stack %></code></pre>
+            </div>
+        </div>
+    <% } %>
+</div>
+<%- include('partials/footer') %>

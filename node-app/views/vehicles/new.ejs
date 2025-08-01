@@ -1,0 +1,61 @@
+<%- include('../partials/header') %>
+
+<div class="container-fluid">
+    <h1 class="mt-4 mb-4">Add New Vehicle</h1>
+
+    <%- include('../partials/flash_messages') %>
+
+    <div class="card shadow-sm">
+        <div class="card-header">
+            Vehicle Information
+        </div>
+        <div class="card-body p-4">
+            <form action="/vehicles" method="POST">
+                <div class="row">
+                    <div class="col-md-6 mb-3">
+                        <label for="make" class="form-label">Make</label>
+                        <input type="text" class="form-control" id="make" name="make" required>
+                    </div>
+                    <div class="col-md-6 mb-3">
+                        <label for="model" class="form-label">Model</label>
+                        <input type="text" class="form-control" id="model" name="model" required>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-md-6 mb-3">
+                        <label for="year" class="form-label">Year</label>
+                        <input type="number" class="form-control" id="year" name="year" required min="1950" max="<%= new Date().getFullYear() + 1 %>">
+                    </div>
+                    <div class="col-md-6 mb-3">
+                        <label for="vin" class="form-label">VIN</label>
+                        <input type="text" class="form-control" id="vin" name="vin" required>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-md-4 mb-3">
+                        <label for="licensePlate" class="form-label">License Plate</label>
+                        <input type="text" class="form-control" id="licensePlate" name="licensePlate" required>
+                    </div>
+                     <div class="col-md-4 mb-3">
+                        <label for="type" class="form-label">Vehicle Type</label>
+                        <select class="form-select" id="type" name="type" required>
+                            <option value="sedan">Sedan</option>
+                            <option value="truck">Truck</option>
+                            <option value="van">Van</option>
+                            <option value="suv">SUV</option>
+                        </select>
+                    </div>
+                    <div class="col-md-4 mb-3">
+                        <label for="mileage" class="form-label">Current Mileage (km)</label>
+                        <input type="number" class="form-control" id="mileage" name="mileage" required min="0">
+                    </div>
+                </div>
+
+                <button type="submit" class="btn btn-primary">Add Vehicle</button>
+                <a href="/vehicles" class="btn btn-secondary">Cancel</a>
+            </form>
+        </div>
+    </div>
+</div>
+
+<%- include('../partials/footer') %>

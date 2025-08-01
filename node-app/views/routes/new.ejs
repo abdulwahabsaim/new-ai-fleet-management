@@ -1,0 +1,58 @@
+<%- include('../partials/header') %>
+
+<div class="container-fluid">
+    <h1 class="mt-4 mb-4">Plan a New Route</h1>
+
+    <%- include('../partials/flash_messages') %>
+    
+    <div class="row">
+        <!-- Map Column -->
+        <div class="col-lg-8 mb-4">
+            <div class="card shadow-sm">
+                <div class="card-header py-3">
+                    <h6 class="m-0 fw-bold text-primary">Map - Click to add waypoints</h6>
+                </div>
+                <div class="card-body p-0">
+                    <div id="route-map"></div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Route Details Column -->
+        <div class="col-lg-4 mb-4">
+            <div class="card shadow-sm">
+                <div class="card-header py-3">
+                    <h6 class="m-0 fw-bold text-primary">Route Details</h6>
+                </div>
+                <div class="card-body">
+                    <form id="routeForm" action="/routes" method="POST">
+                        <div class="mb-3">
+                            <label for="name" class="form-label">Route Name</label>
+                            <input type="text" class="form-control" id="name" name="name" required placeholder="e.g. Downtown Delivery">
+                        </div>
+                        <div class="mb-3">
+                            <label for="description" class="form-label">Description</label>
+                            <textarea class="form-control" id="description" name="description" rows="2"></textarea>
+                        </div>
+                        
+                        <h6 class="mt-4">Waypoints</h6>
+                        <ul class="list-group mb-3" id="waypointsList" style="max-height: 150px; overflow-y: auto;">
+                           <!-- JS will populate this -->
+                        </ul>
+
+                        <input type="hidden" id="waypointsInput" name="waypoints">
+                        
+                        <div class="d-grid">
+                            <button type="submit" class="btn btn-success" id="saveRouteBtn" disabled>
+                                <i class="bi bi-save me-1"></i> Save Route
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script src="/js/route-planner.js"></script>
+<%- include('../partials/footer') %>

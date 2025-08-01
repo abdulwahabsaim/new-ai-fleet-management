@@ -1,0 +1,5 @@
+# Use versions known to have good pre-compiled wheels for Windows
+Flask
+pandas
+scikit-learn
+joblib
