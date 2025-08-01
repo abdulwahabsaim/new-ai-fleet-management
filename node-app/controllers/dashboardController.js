@@ -8,20 +8,19 @@ import { getMaintenancePrediction } from '../services/predictionService.js';
 export const showDashboard = async (req, res) => {
     try {
         // --- Run Batch Predictions ---
-        // In a production app, this might be a separate background job
         const allVehicles = await Vehicle.find();
         const maintenanceAlerts = [];
 
         for (const vehicle of allVehicles) {
             const prediction = await getMaintenancePrediction(vehicle);
-            vehicle.maintenancePrediction = {
-                isNeeded: prediction.prediction === 1,
-                message: prediction.message,
-                predictedAt: new Date(),
-            };
-            await vehicle.save(); // Save the updated prediction to the DB
             
-            if (vehicle.maintenancePrediction.isNeeded) {
+            vehicle.healthScore = prediction.healthScore;
+            vehicle.healthScoreMessage = prediction.message;
+            vehicle.healthScoreLastUpdated = new Date();
+            
+            await vehicle.save();
+            
+            if (vehicle.healthScore < 75) {
                 maintenanceAlerts.push(vehicle);
             }
         }
@@ -31,6 +30,9 @@ export const showDashboard = async (req, res) => {
         const activeVehicles = allVehicles.filter(v => v.status === 'active').length;
         const maintenanceVehicles = allVehicles.filter(v => v.status === 'in_maintenance').length;
         const totalRoutes = await Route.countDocuments();
+
+        // Get active vehicles to display on the map
+        const vehiclesForMap = await Vehicle.find({ status: 'active' }).select('make model licensePlate location');
 
         const recentTrips = await Trip.find()
             .sort({ createdAt: -1 })
@@ -46,8 +48,9 @@ export const showDashboard = async (req, res) => {
                 maintenanceVehicles,
                 totalRoutes,
             },
-            maintenanceAlerts, // Pass the alerts to the view
+            maintenanceAlerts,
             recentTrips,
+            vehiclesForMap: JSON.stringify(vehiclesForMap) // Pass locations as a JSON string
         });
     } catch (error) {
         console.error('Error fetching dashboard data:', error);
@@ -56,7 +59,8 @@ export const showDashboard = async (req, res) => {
             title: 'Dashboard',
             stats: {},
             maintenanceAlerts: [],
-            recentTrips: []
+            recentTrips: [],
+            vehiclesForMap: '[]' // Pass an empty array string on error
         });
     }
 };

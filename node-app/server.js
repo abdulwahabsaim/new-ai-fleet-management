@@ -16,6 +16,7 @@ import routeRoutes from './routes/routeRoutes.js';
 import userRoutes from './routes/userRoutes.js'; // <-- ADD THIS LINE
 import driverRoutes from './routes/driverRoutes.js'; // <-- ADD THIS
 import tripRoutes from './routes/tripRoutes.js'; // <-- ADD THIS
+import maintenanceRoutes from './routes/maintenanceRoutes.js'; // <-- ADD THIS
 
 // Import Middleware
 import { notFound, errorHandler } from './middleware/errorMiddleware.js';
@@ -77,6 +78,7 @@ app.use('/routes', routeRoutes);
 app.use('/users', userRoutes); // <-- ADD THIS LINE
 app.use('/drivers', driverRoutes); // <-- ADD THIS
 app.use('/trips', tripRoutes); // <-- ADD THIS
+app.use('/', maintenanceRoutes); // <-- ADD THIS (note the base path '/')
 
 // --- Error Handling ---
 app.use(notFound);

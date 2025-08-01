@@ -38,7 +38,6 @@ export const createVehicle = async (req, res) => {
         res.redirect('/vehicles/new');
     }
 };
-// ... after createVehicle function ...
 
 // @desc    Show form to edit a vehicle
 // @route   GET /vehicles/:id/edit
@@ -63,10 +62,22 @@ export const showEditVehicleForm = async (req, res) => {
 // @route   PUT /vehicles/:id
 export const updateVehicle = async (req, res) => {
     try {
-        const { make, model, year, vin, licensePlate, type, mileage, status } = req.body;
-        await Vehicle.findByIdAndUpdate(req.params.id, {
+        const { make, model, year, vin, licensePlate, type, mileage, status, latitude, longitude } = req.body;
+        
+        const updateData = {
             make, model, year, vin, licensePlate, type, mileage, status
-        });
+        };
+
+        // If location data is provided, update it in GeoJSON format
+        if (latitude && longitude) {
+            updateData.location = {
+                type: 'Point',
+                coordinates: [Number(longitude), Number(latitude)]
+            };
+        }
+
+        await Vehicle.findByIdAndUpdate(req.params.id, updateData);
+
         req.flash('success_msg', 'Vehicle updated successfully!');
         res.redirect(`/vehicles/${req.params.id}`);
     } catch (error) {
@@ -75,26 +86,18 @@ export const updateVehicle = async (req, res) => {
     }
 };
 
-// ... keep getVehicleDetails and deleteVehicle functions ...
-// @desc    Show a single vehicle's details and run prediction
+// @desc    Show a single vehicle's details
 // @route   GET /vehicles/:id
 export const getVehicleDetails = async (req, res, next) => {
     try {
-        const vehicle = await Vehicle.findById(req.params.id);
+        const vehicle = await Vehicle.findById(req.params.id).populate({
+            path: 'maintenanceRecords',
+            options: { sort: { serviceDate: -1 } }
+        });
+        
         if (!vehicle) {
             return res.status(404).render('404', { title: 'Not Found' });
         }
-
-        // Get AI Prediction
-        const prediction = await getMaintenancePrediction(vehicle);
-        
-        // Update vehicle's prediction fields
-        vehicle.maintenancePrediction = {
-            isNeeded: prediction.prediction === 1,
-            message: prediction.message,
-            predictedAt: new Date(),
-        };
-        await vehicle.save();
         
         res.render('vehicles/show', {
             title: `Vehicle Details | ${vehicle.make} ${vehicle.model}`,

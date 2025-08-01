@@ -1,12 +1,5 @@
 import mongoose from 'mongoose';
 
-const maintenanceRecordSchema = new mongoose.Schema({
-    date: { type: Date, required: true },
-    mileage: { type: Number, required: true },
-    description: { type: String, required: true },
-    cost: { type: Number, required: true },
-});
-
 const vehicleSchema = new mongoose.Schema({
     make: { type: String, required: true },
     model: { type: String, required: true },
@@ -24,21 +17,36 @@ const vehicleSchema = new mongoose.Schema({
         enum: ['active', 'in_maintenance', 'inactive'],
         default: 'active',
     },
+    // New field for storing vehicle location
+    location: {
+        type: {
+            type: String,
+            enum: ['Point'],
+            default: 'Point'
+        },
+        coordinates: {
+            type: [Number], // [longitude, latitude]
+            default: [-74.0060, 40.7128] // Default to NYC
+        }
+    },
     purchaseDate: { type: Date, default: Date.now },
     lastMaintenanceDate: { type: Date },
-    // A simple prediction result stored with the vehicle
-    maintenancePrediction: {
-        isNeeded: { type: Boolean, default: false },
-        message: { type: String, default: 'No prediction available.' },
-        predictedAt: { type: Date },
-    },
-    // Added for fuel analytics
+    healthScore: { type: Number, default: 100 },
+    healthScoreMessage: { type: String, default: 'No prediction available.' },
+    healthScoreLastUpdated: { type: Date },
     averageFuelEfficiency: { type: Number }, // In L/100km
 
-    // Simple maintenance history
-    maintenanceHistory: [maintenanceRecordSchema],
 }, {
     timestamps: true,
+    toJSON: { virtuals: true },
+    toObject: { virtuals: true }
+});
+
+// Virtual populate for maintenance records
+vehicleSchema.virtual('maintenanceRecords', {
+    ref: 'Maintenance',
+    localField: '_id',
+    foreignField: 'vehicle'
 });
 
 const Vehicle = mongoose.model('Vehicle', vehicleSchema);

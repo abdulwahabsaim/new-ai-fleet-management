@@ -29,8 +29,8 @@
                             <% vehicles.forEach(vehicle => { %>
                                 <tr>
                                     <td class="text-center">
-                                        <% if (vehicle.maintenancePrediction && vehicle.maintenancePrediction.isNeeded) { %>
-                                            <i class="bi bi-exclamation-triangle-fill text-danger" title="Maintenance Recommended!"></i>
+                                        <% if (vehicle.healthScore && vehicle.healthScore < 75) { %>
+                                            <i class="bi bi-exclamation-triangle-fill text-<%= vehicle.healthScore < 50 ? 'danger' : 'warning' %>" title="<%= vehicle.healthScoreMessage %> (Score: <%= vehicle.healthScore %>)"></i>
                                         <% } %>
                                     </td>
                                     <td>
