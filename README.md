@@ -1,3 +1,4 @@
+
 <div align="center">
 
   # ✈️ AI Travel System
@@ -53,6 +54,7 @@ Built on a decoupled microservices architecture, the platform pairs an **Express
 
 ## 🏗️ System Architecture
 
+```text
  ┌────────────────────────────────────────────────────────┐
  │                   User Browser / Client                │
  │   - Responsive EJS Views + Custom Modern CSS Theme      │
@@ -81,7 +83,9 @@ Built on a decoupled microservices architecture, the platform pairs an **Express
  ┌───────────────────────────┐
  │    Open-Meteo Live API    │
  └───────────────────────────┘
+```
 
+---
 
 ## ✨ Key Features
 
@@ -125,7 +129,7 @@ Built on a decoupled microservices architecture, the platform pairs an **Express
 
 ## 📂 Directory Structure
 
-
+```text
 abdulwahabsaim-ai-travel-system/
 ├── ai_service/                      # Python Flask AI Microservice
 │   ├── ai_modules/                  # Modular AI logic
@@ -176,6 +180,9 @@ abdulwahabsaim-ai-travel-system/
 ├── server.js                        # Node.js Express server entry point (:3000 / :5000)
 ├── start_both_services.bat          # Windows script to launch both services simultaneously
 └── SETUP_GUIDE.md                   # Step-by-step setup documentation
+```
+
+---
 
 ## 🚀 Getting Started
 
