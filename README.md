@@ -50,53 +50,52 @@ The **AI Travel System** is an end-to-end smart travel companion designed to eli
 
 Built on a decoupled microservices architecture, the platform pairs an **Express.js web application** for authentication, state, and booking CRUD with a **Flask AI microservice** equipped with specialized algorithms for dynamic cost prediction, natural language sentiment evaluation, multi-language translation, seasonal factor analysis, and live weather-based packing insights.
 
----
-## 🏗️ System Architecture & Service Topology
+---## 🏗️ System Architecture & Service Topology
 
 ```mermaid
 flowchart TB
-    subgraph CLIENT["🖥️ User Interface & Client Layer"]
+    subgraph CLIENT ["🖥️ User Interface & Client Layer"]
         UI["<b>EJS Dynamic Views & Layouts</b><br/>• Custom Responsive CSS Theme<br/>• FontAwesome 6 Icons<br/>• Interactive Modal & AJAX Handlers"]
     end
 
-    subgraph NODE["⚡ Node.js & Express Web Core (:3000 / :5000)"]
-        AUTH["<b>Security & Auth Engine</b><br/>• Bcrypt Password Hashing<br/>• Role Guard (Traveler / Admin)"]
+    subgraph NODE ["⚡ Node.js & Express Web Core (:3000 / :5000)"]
         ROUTERS["<b>Application Controllers</b><br/>• Itinerary Management CRUD<br/>• Multi-Modal Booking Aggregations<br/>• Admin Backoffice Metrics"]
+        AUTH["<b>Security & Auth Engine</b><br/>• Bcrypt Password Hashing<br/>• Role Guard (Traveler / Admin)"]
         PROXY["<b>AI Gateway Proxy</b><br/>• Axios Client Dispatcher<br/>• Request Validation Middleware"]
     end
 
-    subgraph DB[("🗄️ MongoDB Database Layer")]
+    subgraph DB ["🗄️ MongoDB Database Layer"]
         USERS[("Users & Preferences")]
         ITIN[("Multi-Day Itineraries")]
         BOOKINGS[("Bookings & Reservations")]
         SESSIONS[("Connect-Mongo Sessions")]
     end
 
-    subgraph PYTHON["🧠 Python Flask AI Microservice (:5001)"]
-        subgraph MODULES["Core Intelligence Modules"]
-            M1["<b>Itinerary Generator</b><br/>Multi-day schedules & activity costs"]
-            M2["<b>Cost & Budget Engine</b><br/>Seasonal indexing & optimization"]
-            M3["<b>Recommendation Engine</b><br/>Weighted preference scoring"]
-            M4["<b>NLP Sentiment Analyzer</b><br/>TextBlob review polarity & insights"]
-            M5["<b>Translation Service</b><br/>Phrase packs & pronunciation"]
-            M6["<b>Weather Analyzer</b><br/>Live WMO parsing & packing advice"]
-        end
+    subgraph PYTHON ["🧠 Python Flask AI Microservice (:5001)"]
+        M1["<b>Itinerary Generator</b><br/>Multi-day schedules & activity costs"]
+        M2["<b>Cost & Budget Engine</b><br/>Seasonal indexing & optimization"]
+        M3["<b>Recommendation Engine</b><br/>Weighted preference scoring"]
+        M4["<b>NLP Sentiment Analyzer</b><br/>TextBlob review polarity & insights"]
+        M5["<b>Translation Service</b><br/>Phrase packs & pronunciation"]
+        M6["<b>Weather Analyzer</b><br/>Live WMO parsing & packing advice"]
     end
 
-    subgraph EXTERNAL["🌐 External Integrations"]
+    subgraph EXTERNAL ["🌐 External Integrations"]
         API["<b>Open-Meteo Live API</b><br/>• Geocoding Engine<br/>• 7-Day Weather Forecasts"]
     end
 
-    %% Flow Connections
-    CLIENT -->|HTTP / Forms / AJAX| ROUTERS
+    %% Routing Flow
+    UI -->|HTTP / Forms / AJAX| ROUTERS
     ROUTERS --> AUTH
     AUTH --> SESSIONS
-    ROUTERS --> DB
+    ROUTERS --> USERS
+    ROUTERS --> ITIN
+    ROUTERS --> BOOKINGS
     ROUTERS --> PROXY
-    PROXY -->|Internal REST API| MODULES
-    M6 -->|Live HTTPS Queries| EXTERNAL
+    PROXY -->|Internal REST API| PYTHON
+    M6 -->|Live HTTPS Queries| API
 
-    %% Styling
+    %% Theme Styling
     classDef clientStyle fill:#1e293b,stroke:#38bdf8,stroke-width:2px,color:#fff;
     classDef nodeStyle fill:#0f172a,stroke:#22c55e,stroke-width:2px,color:#fff;
     classDef pythonStyle fill:#0f172a,stroke:#eab308,stroke-width:2px,color:#fff;
@@ -109,7 +108,6 @@ flowchart TB
     class USERS,ITIN,BOOKINGS,SESSIONS dbStyle;
     class API extStyle;
 ```
-
 ---
 
 
