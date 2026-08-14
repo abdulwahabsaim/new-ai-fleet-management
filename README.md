@@ -51,14 +51,101 @@ The **AI Travel System** is an end-to-end smart travel companion designed to eli
 Built on a decoupled microservices architecture, the platform pairs an **Express.js web application** for authentication, state, and booking CRUD with a **Flask AI microservice** equipped with specialized algorithms for dynamic cost prediction, natural language sentiment evaluation, multi-language translation, seasonal factor analysis, and live weather-based packing insights.
 
 ---
-## 🏗️ System Architecture
+## 🏗️ System Architecture & Service Topology
 
 ```mermaid
-graph TD
-    Client["🖥️ Client / Browser (EJS, Custom CSS)"] -->|HTTP / Forms / AJAX| WebServer["⚡ Node.js & Express Core (:3000 / :5000)"]
-    WebServer -->|Session Auth & CRUD| DB[(🗄️ MongoDB Database)]
-    WebServer -->|Internal REST API| AIService["🧠 Python Flask AI Microservice (:5001)"]
-    AIService -->|Geocoding & Forecasts| WeatherAPI["☀️ Open-Meteo Live API"]
+flowchart TB
+    subgraph CLIENT["🖥️ User Interface & Client Layer"]
+        UI["<b>EJS Dynamic Views & Layouts</b><br/>• Custom Responsive CSS Theme<br/>• FontAwesome 6 Icons<br/>• Interactive Modal & AJAX Handlers"]
+    end
+
+    subgraph NODE["⚡ Node.js & Express Web Core (:3000 / :5000)"]
+        AUTH["<b>Security & Auth Engine</b><br/>• Bcrypt Password Hashing<br/>• Role Guard (Traveler / Admin)"]
+        ROUTERS["<b>Application Controllers</b><br/>• Itinerary Management CRUD<br/>• Multi-Modal Booking Aggregations<br/>• Admin Backoffice Metrics"]
+        PROXY["<b>AI Gateway Proxy</b><br/>• Axios Client Dispatcher<br/>• Request Validation Middleware"]
+    end
+
+    subgraph DB[("🗄️ MongoDB Database Layer")]
+        USERS[("Users & Preferences")]
+        ITIN[("Multi-Day Itineraries")]
+        BOOKINGS[("Bookings & Reservations")]
+        SESSIONS[("Connect-Mongo Sessions")]
+    end
+
+    subgraph PYTHON["🧠 Python Flask AI Microservice (:5001)"]
+        subgraph MODULES["Core Intelligence Modules"]
+            M1["<b>Itinerary Generator</b><br/>Multi-day schedules & activity costs"]
+            M2["<b>Cost & Budget Engine</b><br/>Seasonal indexing & optimization"]
+            M3["<b>Recommendation Engine</b><br/>Weighted preference scoring"]
+            M4["<b>NLP Sentiment Analyzer</b><br/>TextBlob review polarity & insights"]
+            M5["<b>Translation Service</b><br/>Phrase packs & pronunciation"]
+            M6["<b>Weather Analyzer</b><br/>Live WMO parsing & packing advice"]
+        end
+    end
+
+    subgraph EXTERNAL["🌐 External Integrations"]
+        API["<b>Open-Meteo Live API</b><br/>• Geocoding Engine<br/>• 7-Day Weather Forecasts"]
+    end
+
+    %% Flow Connections
+    CLIENT -->|HTTP / Forms / AJAX| ROUTERS
+    ROUTERS --> AUTH
+    AUTH --> SESSIONS
+    ROUTERS --> DB
+    ROUTERS --> PROXY
+    PROXY -->|Internal REST API| MODULES
+    M6 -->|Live HTTPS Queries| EXTERNAL
+
+    %% Styling
+    classDef clientStyle fill:#1e293b,stroke:#38bdf8,stroke-width:2px,color:#fff;
+    classDef nodeStyle fill:#0f172a,stroke:#22c55e,stroke-width:2px,color:#fff;
+    classDef pythonStyle fill:#0f172a,stroke:#eab308,stroke-width:2px,color:#fff;
+    classDef dbStyle fill:#0f172a,stroke:#10b981,stroke-width:2px,color:#fff;
+    classDef extStyle fill:#0f172a,stroke:#f97316,stroke-width:2px,color:#fff;
+
+    class UI clientStyle;
+    class AUTH,ROUTERS,PROXY nodeStyle;
+    class M1,M2,M3,M4,M5,M6 pythonStyle;
+    class USERS,ITIN,BOOKINGS,SESSIONS dbStyle;
+    class API extStyle;
+```
+
+---
+
+
+### 🔄 End-to-End AI Generation Flow
+
+```mermaid
+sequenceDiagram
+    autonumber
+    actor User as 👤 Traveler
+    participant UI as 🖥️ Frontend (EJS / JS)
+    participant Node as ⚡ Express Gateway (:3000)
+    participant Flask as 🧠 Flask AI Service (:5001)
+    participant Weather as ☀️ Open-Meteo API
+    participant DB as 🗄️ MongoDB
+
+    User->>UI: Selects Destination, Budget, Style & Dates
+    UI->>Node: POST /ai/generate-itinerary
+    Node->>Flask: Forward request payload
+    
+    critical AI Processing Pipeline
+        Flask->>Weather: Fetch 7-day destination climate
+        Weather-->>Flask: Temperature & rain probability
+        Flask->>Flask: Calculate seasonal multipliers & cost splits
+        Flask->>Flask: Synthesize day-by-day activity plan
+    end
+
+    Flask-->>Node: Return structured JSON trip plan
+    Node-->>UI: Render interactive itinerary preview
+    
+    opt Traveler Saves Trip
+        User->>UI: Clicks "Save Itinerary"
+        UI->>Node: POST /itinerary/create
+        Node->>DB: Store Itinerary Document
+        DB-->>Node: Document ID Confirmation
+        Node-->>UI: Redirect to Saved Dashboard
+    end
 ```
 ---
 
