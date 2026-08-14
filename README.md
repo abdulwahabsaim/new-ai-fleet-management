@@ -51,40 +51,15 @@ The **AI Travel System** is an end-to-end smart travel companion designed to eli
 Built on a decoupled microservices architecture, the platform pairs an **Express.js web application** for authentication, state, and booking CRUD with a **Flask AI microservice** equipped with specialized algorithms for dynamic cost prediction, natural language sentiment evaluation, multi-language translation, seasonal factor analysis, and live weather-based packing insights.
 
 ---
-
 ## 🏗️ System Architecture
 
-```text
- ┌────────────────────────────────────────────────────────┐
- │                   User Browser / Client                │
- │   - Responsive EJS Views + Custom Modern CSS Theme      │
- │   - Real-Time AI Generation & Interactive Dashboard    │
- └───────────────────────────┬────────────────────────────┘
-                             │ HTTP / JSON / Form Actions
-                             ▼
- ┌────────────────────────────────────────────────────────┐
- │           Node.js & Express Web Core (:3000/:5000)     │
- │   - Session Auth (Bcrypt + Connect-Mongo)              │
- │   - Role-Based Access Control (Traveler vs. Admin)     │
- │   - Itinerary & Multi-Modal Booking Aggregations       │
- └─────────────┬────────────────────────────┬─────────────┘
-               │                            │
-               ▼ REST API Proxies           ▼ Database Driver
- ┌───────────────────────────┐   ┌───────────────────────────┐
- │   Python Flask AI (:5001) │   │     MongoDB Database      │
- │  - Itinerary Generator    │   │  - Users & Preferences    │
- │  - Cost & Budget Engine   │   │  - Multi-Day Itineraries  │
- │  - Recommendation Ranker  │   │  - Reservation Bookings   │
- │  - TextBlob Sentiment     │   │  - Session Store          │
- │  - Translation Service    │   └───────────────────────────┘
- └─────────────┬─────────────┘
-               │ External Geocoding & Weather Requests
-               ▼
- ┌───────────────────────────┐
- │    Open-Meteo Live API    │
- └───────────────────────────┘
+```mermaid
+graph TD
+    Client["🖥️ Client / Browser (EJS, Custom CSS)"] -->|HTTP / Forms / AJAX| WebServer["⚡ Node.js & Express Core (:3000 / :5000)"]
+    WebServer -->|Session Auth & CRUD| DB[(🗄️ MongoDB Database)]
+    WebServer -->|Internal REST API| AIService["🧠 Python Flask AI Microservice (:5001)"]
+    AIService -->|Geocoding & Forecasts| WeatherAPI["☀️ Open-Meteo Live API"]
 ```
-
 ---
 
 ## ✨ Key Features
@@ -126,7 +101,6 @@ Built on a decoupled microservices architecture, the platform pairs an **Express
 </div>
 
 ---
-
 ## 📂 Directory Structure
 
 ```text
@@ -181,7 +155,6 @@ abdulwahabsaim-ai-travel-system/
 ├── start_both_services.bat          # Windows script to launch both services simultaneously
 └── SETUP_GUIDE.md                   # Step-by-step setup documentation
 ```
-
 ---
 
 ## 🚀 Getting Started
